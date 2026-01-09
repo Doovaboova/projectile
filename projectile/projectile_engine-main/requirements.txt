@@ -1,0 +1,11 @@
+streamlit
+numpy
+pandas
+plotly
+scipy
+torch
+joblib
+scikit-learn
+google-generativeai
+openai
+watchdog
