@@ -1,17 +1,20 @@
 import os
 import google.generativeai as genai
 
-# ✅ Secure API key loading
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY not found. Set it as an environment variable.")
-
-genai.configure(api_key=GEMINI_API_KEY)
-
 MODEL = "gemini-1.5-flash"
 
 def interpret_results(true_params, inferred_params, noise):
+    api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key:
+        return (
+            "⚠️ **LLM interpretation unavailable.**\n\n"
+            "The `GEMINI_API_KEY` environment variable is not set.\n"
+            "Numerical inference results are still valid."
+        )
+
+    genai.configure(api_key=api_key)
+
     prompt = f"""
 You are a physicist analyzing a projectile motion inference experiment.
 
@@ -30,11 +33,10 @@ Sensor noise level: {noise}
 Explain:
 1. Accuracy of the inference
 2. Likely sources of error
-3. Why drag is hardest to estimate
+3. Why drag is difficult to estimate
 4. Whether the result is physically reasonable
 
-Write clearly in scientific but intuitive language.
-Limit to ~150 words.
+Limit response to ~150 words.
 """
 
     model = genai.GenerativeModel(MODEL)
